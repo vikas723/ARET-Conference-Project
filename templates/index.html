@@ -1,0 +1,180 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cyberbullying & Stalking Detection</title>
+    <link rel="icon" href="/favicon.ico" type="image/x-icon">
+    <link rel="shortcut icon" href="/images/background.jpg">
+
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap');
+
+        body {
+            font-family: 'Poppins', sans-serif;
+            background: url('/static/images/background.jpg') no-repeat center fixed;
+            background-size: cover;
+            color: #fff;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            height: 100vh;
+            justify-content: center;
+            padding: 20px;
+            text-align: center;
+        }
+
+
+
+        .navbar {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(12px);
+            border-radius: 12px;
+            padding: 15px 30px;
+            box-shadow: 0 4px 10px rgba(255, 255, 255, 0.2);
+            width: 100%;
+            max-width: 600px;
+            text-align: center;
+        }
+
+        .navbar-brand {
+            font-size: 1.8rem;
+            font-weight: bold;
+            color: #fff;
+            margin: auto;
+        }
+
+        .chat-box {
+            max-width: 500px;
+            background: rgba(255, 255, 255, 0.2);
+            backdrop-filter: blur(10px); /* Adds a subtle blur effect */
+            border-radius: 10px;
+            padding: 15px;
+            color: white; /* Adjust text color for readability */
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+            margin-top: 20px;
+            width: 100%;
+        }
+
+        .chat-bubble {
+            background: rgba(255, 255, 255, 0.2);
+            padding: 15px;
+            border-radius: 15px;
+            margin-bottom: 10px;
+            font-size: 1rem;
+            color: #fff;
+        }
+
+        .user-input {
+            border: none;
+            padding: 12px;
+            border-radius: 25px;
+            width: 100%;
+            font-size: 1rem;
+            background: rgba(255, 255, 255, 0.3);
+            color: #000000;
+            font-weight: bold;
+            outline: none;
+            text-align: center;
+        }
+
+        .user-input::placeholder {
+            color: rgba(255, 255, 255, 0.7);
+        }
+
+        .send-btn {
+            background: linear-gradient(135deg, #ff9800, #ff5722);
+            border: none;
+            padding: 12px 20px;
+            border-radius: 25px;
+            color: #fff;
+            font-weight: bold;
+            cursor: pointer;
+            transition: 0.3s ease-in-out;
+            width: 100%;
+        }
+
+        .send-btn:hover {
+            transform: scale(1.05);
+        }
+
+        .result {
+            text-align: center;
+            font-size: 1.2rem;
+            font-weight: bold;
+            padding: 12px;
+            margin-top: 10px;
+            border-radius: 10px;
+            display: none;
+            transition: 0.3s;
+        }
+
+        .Cyberbullying {
+            background-color: #dc3545;
+        }
+
+        .CyberStalking {
+            background-color: #ffc107;
+        }
+
+        .Non-Cyberbullying {
+            background-color: #28a745;
+            color: #000;
+        }
+    </style>
+</head>
+
+<body>
+  <nav class="navbar navbar-dark">
+    <span class="navbar-brand">🛡️ Cyberbullying & Stalking AI 🛑</span>
+  </nav>
+
+  <div class="chat-box">
+    <div class="static-title text-center mb-3">Chat with AI 🧠 </div>
+    <div class="chat-bubble mb-3">👋 Hi there! Paste a tweet to check for cyberbullying or stalking.</div>
+
+    <textarea id="tweetText" class="user-input" rows="2" placeholder="Enter tweet here..."></textarea>
+    <button class="send-btn" onclick="analyzeSentiment()">Analyze</button>
+
+    <div id="result" class="result"></div>
+  </div>
+
+  <script>
+    async function analyzeSentiment() {
+      let tweetText = document.getElementById("tweetText").value.trim();
+
+      if (!tweetText) {
+        alert("Please enter a tweet.");
+        return;
+      }
+
+      let response = await fetch("/analyze", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ tweet: tweetText })
+      });
+
+      let result = await response.json();
+      let sentiment = result.sentiment;
+      let resultDiv = document.getElementById("result");
+
+      resultDiv.style.display = "block";
+      resultDiv.className = "result";
+      if (sentiment === "Cyberbullying") {
+          resultDiv.classList.add("Cyberbullying");
+          resultDiv.innerHTML = "❌ Cyberbullying";
+      } else if (sentiment === "CyberStalking") {
+          resultDiv.classList.add("CyberStalking");
+          resultDiv.innerHTML = "🚨 CyberStalking";
+      } else {
+          resultDiv.classList.add("Non-Cyberbullying");
+          resultDiv.innerHTML = "✅ Non-Cyberbullying";
+      }
+
+    }
+  </script>
+</body>
+
+</html>
